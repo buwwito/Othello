@@ -4,6 +4,8 @@
 #include <iostream>
 #include "common.hpp"
 #include "board.hpp"
+#include <vector>
+
 using namespace std;
 
 class Player {
@@ -14,11 +16,13 @@ public:
 
     Move *doMove(Move *opponentsMove, int msLeft);
     Move *randomMove();
+    Move *Heuristic();
+    Move *MiniMax(Side side, int ply);
 
     // Flag to tell if the player is running within the test_minimax context
     bool testingMinimax;
-private:
     Board board;
+private:
     Side side;
 };
 
