@@ -62,10 +62,10 @@ Move *Player::randomMove() {
     {
         for(int j = 0; j < 8; j++)
         {
-            Move move = Move(i, j);
-            if(board.checkMove(&move, side))
+            Move *move = new Move(i, j);
+            if(board.checkMove(move, side))
             {
-                return &move;
+                return move;
             }
         }
     }
