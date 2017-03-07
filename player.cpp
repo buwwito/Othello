@@ -49,10 +49,10 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
     {
         return nullptr;
     }
-    
+
     //Move *move = randomMove(); //make random move
     //Move *move = Heuristic(); //make move to beat SimplePlayer
-    Move *move = MiniMax(side, 2); //make minimax move
+    Move *move = MiniMax(); //make minimax move        
 
     if(move == nullptr)
     {
@@ -110,18 +110,16 @@ Move *Player::Heuristic() {
                     curCount *=-1;
                 }
 
-                /*
-                if ((j==7||j==0)||(i==7||i==0))
-                {
-                    curCount += 5;
-                }
-                */
-
                 if (((j==7||j==0)&&(i==1||i==6))||((i==7||i==0)&&(j==1||j==6)))
                 {
                     curCount -= 20;
                 }                
                 
+                if ((j==1&&i==1)||(j==6&&i==6)||(j==1&&i==6)||(j==6&&i==1))
+                {
+                    curCount -= 40;
+                }
+
                 if ((i-j)==7||(i-j)==0||(i-j)==-7)
                 {
                     curCount += 20;
@@ -143,7 +141,7 @@ Move *Player::Heuristic() {
     return nullptr;
 }
 
-Move *Player::MiniMax(Side side, int ply) {
+Move *Player::MiniMax() {
     //Move *Bestmove;
     std::vector<Move*> possibleMoves;
     std::vector<int> mins;
@@ -194,8 +192,6 @@ Move *Player::MiniMax(Side side, int ply) {
         }
         mins.push_back(min);
     }
-
-    std::cerr<<std::endl;
     
     int max_move = -100000;
     int max_index = 0;
