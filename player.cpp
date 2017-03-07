@@ -47,8 +47,10 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
     Move *move = randomMove();
     if(move == nullptr)
     {
+        std::cerr << "nullptr" << std::endl;
         return nullptr;
     }
+    std::cerr << "move is (" << move->getX() << ", " << move->getY() << ")" << std::endl;
     board.doMove(move, side);
     return move;
     /*
