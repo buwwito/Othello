@@ -52,7 +52,8 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
 
     //Move *move = randomMove(); //make random move
     //Move *move = Heuristic(); //make move to beat SimplePlayer
-    Move *move = MiniMax(); //make minimax move        
+    //Move *move = MiniMax(); //make minimax move        
+    Move *move = AlphaBetaShell(6); //make AlphaBeta move
 
     if(move == nullptr)
     {
@@ -208,4 +209,123 @@ Move *Player::MiniMax() {
         return possibleMoves[max_index];
     }
     return nullptr;
+}
+
+Move *Player::AlphaBetaShell(int depth) {
+    std::vector<Move*> possibleMoves;
+    bool canReturn = false;
+    Side oSide = WHITE;
+    if(side == WHITE)
+    {
+        oSide = BLACK;
+    }
+    
+
+    for(int i = 0; i < 8; i++)
+    {
+        for(int j = 0; j < 8; j++)
+        {
+            Move *move = new Move(i, j);
+            if(board.checkMove(move, side))
+            {
+                possibleMoves.push_back(move);
+                canReturn = true;
+            }
+        }
+    }
+    Move *Bestmove = possibleMoves[0];
+    int maxCount = -10000;
+    int alpha = -10000;
+    int beta = 10000;
+    
+    if (possibleMoves.size() <= 2)
+        depth += 2;
+    
+    for(size_t n = 0; n < possibleMoves.size(); n++)
+    {
+        int x = possibleMoves[n]->getX();
+        int y = possibleMoves[n]->getY();
+        Board tempBoard = board;
+        tempBoard.doMove(possibleMoves[n], side);
+        int curCount = -AlphaBeta(oSide, tempBoard, depth, -beta, -alpha);
+        if (((x+y)%7==0) && ((x-y)%7==0))
+            curCount += 20;
+        //std::cerr<<alpha<<"/"<<beta<<"("<<possibleMoves[n]->getX()<<","<<possibleMoves[n]->getY()<<")"<<curCount<<"|"<<std::endl;
+        if (curCount > maxCount)
+        {
+            Bestmove = possibleMoves[n];
+            maxCount = curCount;
+        }
+    }
+    if (canReturn)
+        return Bestmove;
+    return nullptr;
+}
+
+int Player::AlphaBeta(Side side, Board board, int depth, int alpha, int beta) {
+    //std::cerr<<depth<<"\\"<<side<<std::endl;
+    if (depth == 0)
+    {
+        int curCount = board.countBlack()-board.countWhite();
+        //int curCount = eval(board);
+        if (side == WHITE)
+        {
+            curCount *= -1;
+        }
+        return curCount;
+    }
+    std::vector<Move*> possibleMoves;
+    int score;
+    Side oSide = WHITE;
+    if(side == WHITE)
+    {
+        oSide = BLACK;
+    }
+    for(int i = 0; i < 8; i++)
+    {
+        for(int j = 0; j < 8; j++)
+        {
+            Move *move = new Move(i, j);
+            if(board.checkMove(move, side))
+            {
+                possibleMoves.push_back(move);
+            }
+        }
+    }
+
+    for(size_t n = 0; n < possibleMoves.size(); n++)
+    {   
+        Board tempBoard = board;
+        tempBoard.doMove(possibleMoves[n], side);
+        score = -AlphaBeta(oSide, tempBoard, depth-1,-beta,-alpha);
+        if (score > alpha)
+            alpha = score;
+        if (score >= beta)
+            return beta;
+    }
+    return alpha;
+}
+
+int Player::eval(Board board)
+{
+    int score = board.countBlack()-board.countWhite();
+    
+    if (board.get(side,0,0))
+        score += 40;
+    if (board.get(side,0,7))
+        score += 40;
+    if (board.get(side,7,0))
+        score += 40;
+    if (board.get(side,7,7))
+        score += 40;
+    if (board.get(side,1,1))
+        score -= 10;
+    if (board.get(side,1,6))
+        score -= 10;
+    if (board.get(side,6,1))
+        score -= 10;
+    if (board.get(side,6,6))
+        score -= 10;
+    
+    return score;
 }

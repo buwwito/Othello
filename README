@@ -1,0 +1,12 @@
+week 1
+andrew - randomplayer
+albert - heuristic, minimax
+
+week 2
+albert - ab pruning
+____________
+
+improvements made from week 1 to week 2
+minimax upgraded to ab pruning, hardcoded depth replaced with recursive, 
+attempts made at implementing other heuristics + iterative deepening, largely unsuccessful
+deepening slightly dynamic, but barely and only on a casewise basis

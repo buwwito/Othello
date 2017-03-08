@@ -18,6 +18,9 @@ public:
     Move *randomMove();
     Move *Heuristic();
     Move *MiniMax();
+    Move *AlphaBetaShell(int depth);
+    int AlphaBeta(Side side, Board board, int depth, int alpha, int beta);
+    int eval(Board board);
 
     // Flag to tell if the player is running within the test_minimax context
     bool testingMinimax;
